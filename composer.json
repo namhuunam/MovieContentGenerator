@@ -1,0 +1,33 @@
+{
+    "name": "namhuunam/moviecontentgenerator",
+    "description": "Package tự động tạo nội dung cho phim sử dụng API Gemini",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nam Huu Nam",
+            "email": "namhuunam@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.3|^8.0",
+        "illuminate/support": "^8.0",
+        "illuminate/console": "^8.0",
+        "illuminate/database": "^8.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NamHuuNam\\MovieContentGenerator\\": "src/MovieContentGenerator"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NamHuuNam\\MovieContentGenerator\\Providers\\MovieContentGeneratorServiceProvider"
+            ]
+        }
+    }
+}
