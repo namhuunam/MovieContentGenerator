@@ -36,14 +36,25 @@ class GeminiService
      * Generate content using Gemini API
      *
      * @param string $name Movie title
-     * @param string $content Movie description
+     * @param string $content Movie description (can be empty)
      * @return string|null Generated content or null if error
      */
     public function generateContent($name, $content)
     {
         try {
             $promptTemplate = config('MovieContentGenerator.prompt_template');
-            $prompt = str_replace(['{name}', '{content}'], [$name, $content], $promptTemplate);
+            
+            // Nếu content rỗng, sử dụng prompt template tùy chỉnh chỉ với name
+            if (empty($content)) {
+                $nameOnlyPromptTemplate = config('MovieContentGenerator.name_only_prompt_template', 
+                    'Dựa trên tiêu đề phim "{name}", hãy viết một bài viết về phim chuẩn SEO với độ dài khoảng 150 đến 300 từ tránh trùng lặp nội dung với nội dung các website khác. Ngôn ngữ 100% tiếng việt, tuyệt đối không dùng Markdown, không chèn ảnh, không chèn bất kỳ link, và ký tự đặc biệt nào.');
+                
+                $prompt = str_replace('{name}', $name, $nameOnlyPromptTemplate);
+                LoggerService::info("Sử dụng prompt chỉ có name cho phim: $name");
+            } else {
+                // Sử dụng prompt template mặc định với cả name và content
+                $prompt = str_replace(['{name}', '{content}'], [$name, $content], $promptTemplate);
+            }
 
             $response = $this->client->post(
                 "https://generativelanguage.googleapis.com/v1beta/models/{$this->modelId}:generateContent?key={$this->apiKey}",
