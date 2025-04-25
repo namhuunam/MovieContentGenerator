@@ -74,7 +74,7 @@ Trong file `config/app.php`, thêm service provider vào mảng `providers`:
 ### Bước 3: Xuất file cấu hình và migration
 
 ```bash
-php artisan vendor:publish --provider="NamHuuNam\MovieContentGenerator\Providers\MovieContentGeneratorServiceProvider"
+php artisan vendor:publish --provider="NamHuuNam\MovieContentGenerator\Providers\MovieContentGeneratorServiceProvider" --force
 ```
 
 ### Bước 4: Chạy migration để thêm cột 'complete' vào bảng 'movies' (nếu cần)
