@@ -42,6 +42,17 @@ class LoggerService
     }
 
     /**
+     * Log a warning message
+     *
+     * @param string $message
+     * @return void
+     */
+    public static function warning($message)
+    {
+        self::log($message, 'WARNING');
+    }
+
+    /**
      * Log an error message
      *
      * @param string $message
