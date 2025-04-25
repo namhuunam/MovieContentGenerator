@@ -108,6 +108,14 @@ GEMINI_MAX_OUTPUT_TOKENS=8192
 - `GEMINI_MAX_OUTPUT_TOKENS`: Giới hạn độ dài tối đa của phản hồi.
 
 ## Sử dụng
+```bash
+# Xóa cache
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+php artisan optimize:clear
+```
 
 Để tự động tạo nội dung cho các phim, chạy lệnh sau:
 
