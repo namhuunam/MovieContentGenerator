@@ -83,15 +83,24 @@ class MovieContentService
             foreach ($movies as $movie) {
                 try {
                     // Kiểm tra dữ liệu đầu vào
-                    if (empty($movie->name) || empty($movie->content)) {
-                        LoggerService::error("Phim ID {$movie->id} thiếu thông tin name hoặc content.");
+                    if (empty($movie->name)) {
+                        LoggerService::error("Phim ID {$movie->id} thiếu thông tin name. Bỏ qua phim này.");
                         $stats['failed']++;
                         continue;
                     }
 
-                    // Gọi API Gemini để tạo nội dung mới
-                    LoggerService::info("Đang xử lý phim: {$movie->name} (ID: {$movie->id})");
-                    $generatedContent = $this->geminiService->generateContent($movie->name, $movie->content);
+                    $movieContent = $movie->content ?? '';
+                    $generatedContent = null;
+
+                    // Nếu content bị thiếu, chỉ sử dụng name
+                    if (empty($movieContent)) {
+                        LoggerService::info("Phim ID {$movie->id}: Thiếu thông tin content, chỉ sử dụng name để tạo nội dung");
+                        $generatedContent = $this->geminiService->generateContent($movie->name, '');
+                    } else {
+                        // Sử dụng cả name và content để tạo nội dung
+                        LoggerService::info("Đang xử lý phim: {$movie->name} (ID: {$movie->id})");
+                        $generatedContent = $this->geminiService->generateContent($movie->name, $movieContent);
+                    }
 
                     // Nếu không nhận được nội dung, bỏ qua phim này và tiếp tục phim tiếp theo
                     if ($generatedContent === null) {
