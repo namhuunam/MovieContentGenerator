@@ -109,11 +109,14 @@ class MovieContentService
                         continue;
                     }
 
+                    // Xử lý nội dung để loại bỏ các dòng trống
+                    $processedContent = $this->processContent($generatedContent);
+
                     // Cập nhật nội dung và đánh dấu đã hoàn thành
                     DB::table('movies')
                         ->where('id', $movie->id)
                         ->update([
-                            'content' => '<p>' . $generatedContent . '</p>',
+                            'content' => '<p>' . $processedContent . '</p>',
                             'complete' => 1
                         ]);
 
@@ -135,5 +138,34 @@ class MovieContentService
             LoggerService::error("Lỗi trong quá trình xử lý phim: " . $e->getMessage());
             return $stats;
         }
+    }
+
+    /**
+     * Process the content to remove empty lines
+     * 
+     * @param string $content
+     * @return string
+     */
+    protected function processContent($content)
+    {
+        // Chuyển đổi tất cả dấu xuống dòng thành \n để đảm bảo xử lý nhất quán
+        $content = str_replace(["\r\n", "\r"], "\n", $content);
+        
+        // Tách nội dung thành các dòng
+        $lines = explode("\n", $content);
+        
+        // Lọc các dòng trống
+        $filteredLines = [];
+        foreach ($lines as $line) {
+            // Chỉ giữ lại các dòng không trống
+            if (trim($line) !== '') {
+                $filteredLines[] = $line;
+            }
+        }
+        
+        // Nối lại các dòng với dấu xuống dòng
+        $processedContent = implode("\n", $filteredLines);
+        
+        return $processedContent;
     }
 }
